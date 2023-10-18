@@ -1,0 +1,68 @@
+pipeline 
+{
+    agent any
+    stages
+    {
+        stage('Git-Checkout')
+        {
+            steps
+            {
+                echo "Cheking out for Git Repo";
+                git branch: 'main', url: 'https://github.com/Philotus/Jenkins_test.git'
+            }
+        }
+        stage('Build')
+        {
+            steps
+            {
+                echo "compiled!";
+                bat 'Build.bat'
+            }
+        }
+
+        stage('Unit')
+        {
+            steps
+            {
+                echo "Unit Passing";
+                bat 'Unit.bat'
+            }
+        }
+
+        stage('Quality-Gate')
+        {
+            steps
+            {
+                echo "Quality test passing";
+                bat 'Quality.bat'
+            }
+        }
+        stage('Deploy')
+        {
+            steps
+            {
+                echo "Pass!";
+                bat 'Deploy.bat'
+            }
+        }
+    }
+    post
+    {
+        always
+        {
+            echo "This will run always"
+        }
+        success
+        {
+            echo 'This will run only on success'
+        }
+        failure
+        {
+            echo 'This will run only on failure'
+        }
+        unstable
+        {
+            echo 'This will run only if run marked as unstable'
+        }
+    }
+}
